@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Short URL Service API
-  description: API for creating short URLs from full URLs
+  description: API for creating short URLs from full URLs and retrieving full URLs from short URLs
   version: 1.0.0
   contact:
     name: API Support
@@ -12,6 +12,30 @@ servers:
     description: Production server
 
 paths:
+  /:
+    get:
+      summary: Redirect to full URL
+      description: Redirects to a hardcoded full URL (for demonstration purposes)
+      operationId: redirectToFullUrl
+      tags:
+        - URL Redirect
+      responses:
+        '302':
+          description: Redirect to the full URL
+          headers:
+            Location:
+              description: The full URL to redirect to
+              schema:
+                type: string
+                format: uri
+                example: "https://www.example.com"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /url/short:
     post:
       summary: Create a short URL
@@ -66,6 +90,67 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  /url/full:
+    get:
+      summary: Get full URL from short URL
+      description: Retrieves the full URL corresponding to the provided short URL
+      operationId: getFullUrl
+      tags:
+        - URL Lookup
+      parameters:
+        - name: shortUrl
+          in: query
+          required: true
+          description: The short URL (URL-encoded) to look up
+          schema:
+            type: string
+            format: uri
+            example: "https://short.url/abc123"
+      responses:
+        '200':
+          description: Full URL retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFullUrlResponse'
+              examples:
+                example1:
+                  summary: Successful response
+                  value:
+                    fullUrl: "https://www.example.com/very/long/path/to/resource"
+        '400':
+          description: Bad request - missing or invalid short URL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                missingShortUrl:
+                  summary: Missing short URL parameter
+                  value:
+                    error: "Bad Request"
+                    message: "Short URL parameter is required"
+                    timestamp: "2026-01-15T10:30:00Z"
+        '404':
+          description: Short URL not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                notFound:
+                  summary: Short URL not found
+                  value:
+                    error: "Not Found"
+                    message: "The provided short URL does not exist"
+                    timestamp: "2026-01-15T10:30:00Z"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
 components:
   schemas:
     CreateShortUrlRequest:
@@ -80,7 +165,6 @@ components:
           example: "https://www.example.com/very/long/path/to/resource"
           minLength: 1
           maxLength: 2048
-    
     CreateShortUrlResponse:
       type: object
       required:
@@ -91,7 +175,16 @@ components:
           format: uri
           description: The generated short URL
           example: "https://short.url/abc123"
-    
+    GetFullUrlResponse:
+      type: object
+      required:
+        - fullUrl
+      properties:
+        fullUrl:
+          type: string
+          format: uri
+          description: The full URL corresponding to the short URL
+          example: "https://www.example.com/very/long/path/to/resource"
     ErrorResponse:
       type: object
       properties:
@@ -112,3 +205,7 @@ components:
 tags:
   - name: URL Shortening
     description: Operations related to URL shortening
+  - name: URL Lookup
+    description: Operations for retrieving full URLs from short URLs
+  - name: URL Redirect
+    description: Operations for redirecting to full URLs
