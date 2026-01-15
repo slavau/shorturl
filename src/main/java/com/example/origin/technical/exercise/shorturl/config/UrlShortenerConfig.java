@@ -1,0 +1,1 @@
+Creating configuration class with Lombok data annotation.

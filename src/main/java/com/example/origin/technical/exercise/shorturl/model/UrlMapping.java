@@ -1,0 +1,1 @@
+Creating UrlMapping entity with Lombok annotations.

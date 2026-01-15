@@ -1,0 +1,1 @@
+Creating repository interface with necessary methods.
