@@ -47,9 +47,4 @@ public class InMemoryUrlMappingRepository implements UrlMappingRepository {
     public long count() {
         return urlMappingStore.size();
     }
-
-    @Override
-    public void deleteAll() {
-        urlMappingStore.clear();
-    }
 }

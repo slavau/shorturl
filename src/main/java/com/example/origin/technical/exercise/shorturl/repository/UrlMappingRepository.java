@@ -6,7 +6,7 @@ import java.util.Optional;
 
 /**
  * Repository interface for managing URL mappings.
- * Stores mappings with short URL as the key. 
+ * Stores mappings with short URL as the key.
  */
 public interface UrlMappingRepository {
 
@@ -36,7 +36,7 @@ public interface UrlMappingRepository {
     Optional<UrlMapping> findByFullUrl(String fullUrl);
 
     /**
-     * Checks if a short URL already exists. 
+     * Checks if a short URL already exists.
      *
      * @param shortUrl The short URL to check
      * @return true if exists, false otherwise
@@ -44,7 +44,7 @@ public interface UrlMappingRepository {
     boolean existsByShortUrl(String shortUrl);
 
     /**
-     * Deletes a URL mapping by short URL. 
+     * Deletes a URL mapping by short URL.
      *
      * @param shortUrl The short URL key
      * @return true if deleted, false if not found
@@ -58,8 +58,4 @@ public interface UrlMappingRepository {
      */
     long count();
 
-    /**
-     * Deletes all URL mappings.
-     */
-    void deleteAll();
 }

@@ -5,20 +5,22 @@ info:
   version: 1.0.0
   contact:
     name: API Support
-servers:
-  - url: http://localhost:8080
-    description: Development server
-  - url: https://api.example.com
-    description: Production server
 
 paths:
-  /:
+  /{path}:
     get:
       summary: Redirect to full URL
       description: Redirects to a hardcoded full URL (for demonstration purposes)
       operationId: redirectToFullUrl
       tags:
         - URL Redirect
+      parameters:
+        - name: path
+          in: path
+          required: true
+          schema:
+            type: string
+            description: The full path requested
       responses:
         '302':
           description: Redirect to the full URL
@@ -36,7 +38,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-  /url/short:
+  /api/v1/url/short:
     post:
       summary: Create a short URL
       description: Creates a shortened URL from the provided full URL
@@ -90,7 +92,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-  /url/full:
+  /api/v1/url/full:
     get:
       summary: Get full URL from short URL
       description: Retrieves the full URL corresponding to the provided short URL
@@ -163,8 +165,8 @@ components:
           format: uri
           description: The full URL to be shortened
           example: "https://www.example.com/very/long/path/to/resource"
-          minLength: 1
-          maxLength: 2048
+#          minLength: 1
+#          maxLength: 2048
     CreateShortUrlResponse:
       type: object
       required:
