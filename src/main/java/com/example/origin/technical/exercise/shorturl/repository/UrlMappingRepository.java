@@ -24,7 +24,7 @@ public interface UrlMappingRepository {
      * @param shortUrl The short URL key
      * @return Optional containing the mapping if found
      */
-    Optional<UrlMapping> findByShortUrl(String shortUrl);
+    Optional<UrlMapping> findByShortUrlPath(String shortUrl);
 
     /**
      * Finds a URL mapping by full URL.
@@ -41,7 +41,7 @@ public interface UrlMappingRepository {
      * @param shortUrl The short URL to check
      * @return true if exists, false otherwise
      */
-    boolean existsByShortUrl(String shortUrl);
+    boolean existsByShortUrlPath(String shortUrl);
 
     /**
      * Deletes a URL mapping by short URL.
@@ -49,7 +49,7 @@ public interface UrlMappingRepository {
      * @param shortUrl The short URL key
      * @return true if deleted, false if not found
      */
-    boolean deleteByShortUrl(String shortUrl);
+    boolean deleteByShortUrlPath(String shortUrl);
 
     /**
      * Returns the total number of mappings.

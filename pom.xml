@@ -106,6 +106,7 @@
 								<delegatePattern>true</delegatePattern>
 								<useSpringBoot3>true</useSpringBoot3>
 								<interfaceOnly>true</interfaceOnly>
+								<dateLibrary>java8-localdatetime</dateLibrary>
 								<skipDefaultInterface>true</skipDefaultInterface>
 								<useTags>true</useTags>
 							</configOptions>

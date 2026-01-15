@@ -16,7 +16,7 @@ public class UrlShortenerConfig {
     /**
      * The base URL for shortened URLs (e.g., "https://short.url")
      */
-    private String baseUrl = "http://localhost:8080";
+    private String baseUrl = "http://localhost:8080/";
 
     /**
      * Length of generated short URL

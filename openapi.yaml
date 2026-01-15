@@ -61,7 +61,7 @@ paths:
                 value:
                   url: "https://www.example.com/page?param1=value1&param2=value2"
       responses:
-        '201':
+        '200':
           description: Short URL created successfully
           content:
             application/json:
@@ -94,8 +94,8 @@ paths:
 
   /api/v1/url/full:
     get:
-      summary: Get full URL from short URL
-      description: Retrieves the full URL corresponding to the provided short URL
+      summary: Get full URL details from short URL
+      description: Retrieves the full URL details corresponding to the provided short URL
       operationId: getFullUrl
       tags:
         - URL Lookup
@@ -162,11 +162,10 @@ components:
       properties:
         url:
           type: string
-          format: uri
-          description: The full URL to be shortened
+          format: url
+          description: A valid, full URL to be shortened
           example: "https://www.example.com/very/long/path/to/resource"
-#          minLength: 1
-#          maxLength: 2048
+          pattern: "^(http|https)://[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}(/.*)?$" # Matches https://domain.tld/path
     CreateShortUrlResponse:
       type: object
       required:
@@ -187,6 +186,27 @@ components:
           format: uri
           description: The full URL corresponding to the short URL
           example: "https://www.example.com/very/long/path/to/resource"
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the short URL was created
+          example: "2026-01-15T10:00:00Z"
+        lastAccessedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the short URL was last accessed
+          example: "2026-01-15T10:30:00Z"
+        expiresAt:
+          type: string
+          format: date-time
+          description: Expiration timestamp of the short URL
+          example: "2026-07-15T10:00:00Z"
+        accessCount:
+          type: integer
+          format: int64
+          description: Number of times the short URL has been accessed
+          example: 67
+
     ErrorResponse:
       type: object
       properties:

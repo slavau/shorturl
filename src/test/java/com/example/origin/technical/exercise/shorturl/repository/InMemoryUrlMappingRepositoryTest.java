@@ -18,10 +18,10 @@ class InMemoryUrlMappingRepositoryTest {
     }
 
     @Test
-    void testSaveAndFindByShortUrl() {
+    void testSaveAndFindByShortUrlPath() {
         UrlMapping mapping = new UrlMapping("shortUrl", "http://fullUrl.com");
         repository.save(mapping);
-        Optional<UrlMapping> found = repository.findByShortUrl("shortUrl");
+        Optional<UrlMapping> found = repository.findByShortUrlPath("shortUrl");
         assertTrue(found.isPresent());
         assertEquals(mapping, found.get());
     }
@@ -34,10 +34,10 @@ class InMemoryUrlMappingRepositoryTest {
     }
 
     @Test
-    void testDeleteByShortUrl() {
+    void testDeleteByShortUrlPath() {
         UrlMapping mapping = new UrlMapping("shortUrl", "http://fullUrl.com");
         repository.save(mapping);
-        assertTrue(repository.deleteByShortUrl("shortUrl"));
-        assertFalse(repository.existsByShortUrl("shortUrl"));
+        assertTrue(repository.deleteByShortUrlPath("shortUrl"));
+        assertFalse(repository.existsByShortUrlPath("shortUrl"));
     }
 }

@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 import java.time.LocalDateTime;
 
 /**
- * Entity representing the mapping between a short URL and a full URL. 
+ * Entity representing the mapping between a short URL and a full URL.
  */
 @Data
 @NoArgsConstructor
@@ -19,24 +19,28 @@ import java.time.LocalDateTime;
 public class UrlMapping {
 
     @EqualsAndHashCode.Include
-    private String shortUrl;
-    
+    private String shortUrlPath;
+
     private String fullUrl;
-    
+
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
-    
+
     @Builder.Default
     private LocalDateTime lastAccessedAt = LocalDateTime.now();
-    
+
+	@Builder.Default
+	private LocalDateTime expiresAt = LocalDateTime.now().plusDays(360);
+
     @Builder.Default
     private long accessCount = 0;
 
-    public UrlMapping(String shortUrl, String fullUrl) {
-        this.shortUrl = shortUrl;
+    public UrlMapping(String shortUrlPath, String fullUrl) {
+        this.shortUrlPath = shortUrlPath;
         this.fullUrl = fullUrl;
         this.createdAt = LocalDateTime.now();
         this.lastAccessedAt = LocalDateTime.now();
+		this.expiresAt = LocalDateTime.now().plusDays(360);
         this.accessCount = 0;
     }
 

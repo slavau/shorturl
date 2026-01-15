@@ -13,38 +13,43 @@ import java.util.Optional;
 @Repository
 public class InMemoryUrlMappingRepository implements UrlMappingRepository {
 
-    private final Map<String, UrlMapping> urlMappingStore = new HashMap<>();
+    private final Map<String, UrlMapping> urlMappingStoreByShortUrlPath = new HashMap<>();
+	private final Map<String, UrlMapping> urlMappingStoreByFullUrl = new HashMap<>();
 
     @Override
     public UrlMapping save(UrlMapping mapping) {
-        urlMappingStore.put(mapping.getShortUrl(), mapping);
+        urlMappingStoreByShortUrlPath.put(mapping.getShortUrlPath(), mapping);
+		urlMappingStoreByFullUrl.put(mapping.getFullUrl(), mapping);
+
         return mapping;
     }
 
     @Override
-    public Optional<UrlMapping> findByShortUrl(String shortUrl) {
-        return Optional.ofNullable(urlMappingStore.get(shortUrl));
+    public Optional<UrlMapping> findByShortUrlPath(String shortUrlPath) {
+        return Optional.ofNullable(urlMappingStoreByShortUrlPath.get(shortUrlPath));
     }
 
     @Override
     public Optional<UrlMapping> findByFullUrl(String fullUrl) {
-        return urlMappingStore.values().stream()
-                .filter(mapping -> mapping.getFullUrl().equals(fullUrl))
-                .findFirst();
+		 return Optional.ofNullable(urlMappingStoreByFullUrl.get(fullUrl));
     }
 
     @Override
-    public boolean existsByShortUrl(String shortUrl) {
-        return urlMappingStore.containsKey(shortUrl);
+    public boolean existsByShortUrlPath(String shortUrlPath) {
+        return urlMappingStoreByShortUrlPath.containsKey(shortUrlPath);
     }
 
     @Override
-    public boolean deleteByShortUrl(String shortUrl) {
-        return urlMappingStore.remove(shortUrl) != null;
+    public boolean deleteByShortUrlPath(String shortUrlPath) {
+		UrlMapping removed = urlMappingStoreByShortUrlPath.remove(shortUrlPath);
+		if (removed != null) {
+			urlMappingStoreByFullUrl.remove(removed.getFullUrl());
+		}
+		return removed != null;
     }
 
     @Override
     public long count() {
-        return urlMappingStore.size();
+        return urlMappingStoreByShortUrlPath.size();
     }
 }

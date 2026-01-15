@@ -1,6 +1,7 @@
 package com.example.origin.technical.exercise.shorturl.api;
 
 import com.example.origin.technical.exercise.shorturl.model.GetFullUrlResponse;
+import com.example.origin.technical.exercise.shorturl.model.UrlMapping;
 import com.example.origin.technical.exercise.shorturl.repository.InMemoryUrlMappingRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +17,23 @@ public class UrlLookupApiController implements UrlLookupApi {
 
 	@Override
 	public ResponseEntity<GetFullUrlResponse> _getFullUrl(URI shortUrl) {
-		var mappingOpt = inMemoryUrlMappingRepository.findByShortUrl(shortUrl.toString());
+		var mappingOpt = inMemoryUrlMappingRepository.findByShortUrlPath(toShortPath(shortUrl));
 		return mappingOpt
-			.map(mapping -> ResponseEntity.ok(new GetFullUrlResponse().fullUrl(URI.create(mapping.getFullUrl()))))
+			.map(mapping -> ResponseEntity.ok(toResponse(mapping)))
 			.orElseGet(() -> ResponseEntity.notFound().build());
+	}
+
+	private static String toShortPath(URI shortUrl) {
+		String path = shortUrl.getPath();
+		return path.startsWith("/") ? path.substring(1) : path;
+	}
+
+	private static GetFullUrlResponse toResponse(UrlMapping mapping) {
+		return new GetFullUrlResponse()
+			.fullUrl(URI.create(mapping.getFullUrl()))
+			.createdAt(mapping.getCreatedAt())
+			.lastAccessedAt(mapping.getLastAccessedAt())
+			.expiresAt(mapping.getExpiresAt())
+			.accessCount(mapping.getAccessCount());
 	}
 }
