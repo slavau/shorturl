@@ -1,0 +1,114 @@
+openapi: 3.0.3
+info:
+  title: Short URL Service API
+  description: API for creating short URLs from full URLs
+  version: 1.0.0
+  contact:
+    name: API Support
+servers:
+  - url: http://localhost:8080
+    description: Development server
+  - url: https://api.example.com
+    description: Production server
+
+paths:
+  /url/short:
+    post:
+      summary: Create a short URL
+      description: Creates a shortened URL from the provided full URL
+      operationId: createShortUrl
+      tags:
+        - URL Shortening
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateShortUrlRequest'
+            examples:
+              example1:
+                summary: Example with HTTPS URL
+                value:
+                  url: "https://www.example.com/very/long/path/to/resource"
+              example2:
+                summary: Example with query parameters
+                value:
+                  url: "https://www.example.com/page?param1=value1&param2=value2"
+      responses:
+        '201':
+          description: Short URL created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateShortUrlResponse'
+              examples:
+                example1:
+                  summary: Successful response
+                  value:
+                    shortUrl: "https://short.url/abc123"
+        '400':
+          description: Bad request - invalid URL format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalidUrl:
+                  summary: Invalid URL format
+                  value:
+                    error: "Invalid URL format"
+                    message: "The provided URL is not valid"
+                    timestamp: "2026-01-15T10:30:00Z"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    CreateShortUrlRequest:
+      type: object
+      required:
+        - url
+      properties:
+        url:
+          type: string
+          format: uri
+          description: The full URL to be shortened
+          example: "https://www.example.com/very/long/path/to/resource"
+          minLength: 1
+          maxLength: 2048
+    
+    CreateShortUrlResponse:
+      type: object
+      required:
+        - shortUrl
+      properties:
+        shortUrl:
+          type: string
+          format: uri
+          description: The generated short URL
+          example: "https://short.url/abc123"
+    
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error type
+          example: "Bad Request"
+        message:
+          type: string
+          description: Detailed error message
+          example: "The provided URL is not valid"
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp when the error occurred
+          example: "2026-01-15T10:30:00Z"
+
+tags:
+  - name: URL Shortening
+    description: Operations related to URL shortening
