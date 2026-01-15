@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 import java.net.URI;
+import java.net.URL;
 
 @Controller
 @AllArgsConstructor
@@ -16,15 +17,15 @@ public class UrlLookupApiController implements UrlLookupApi {
 	private final InMemoryUrlMappingRepository inMemoryUrlMappingRepository;
 
 	@Override
-	public ResponseEntity<GetFullUrlResponse> _getFullUrl(URI shortUrl) {
+	public ResponseEntity<GetFullUrlResponse> _getFullUrl(String shortUrl) {
 		var mappingOpt = inMemoryUrlMappingRepository.findByShortUrlPath(toShortPath(shortUrl));
 		return mappingOpt
 			.map(mapping -> ResponseEntity.ok(toResponse(mapping)))
 			.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
-	private static String toShortPath(URI shortUrl) {
-		String path = shortUrl.getPath();
+	private static String toShortPath(String shortUrl) {
+		String path = URI.create(shortUrl).getPath();
 		return path.startsWith("/") ? path.substring(1) : path;
 	}
 

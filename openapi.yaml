@@ -106,7 +106,8 @@ paths:
           description: The short URL (URL-encoded) to look up
           schema:
             type: string
-            format: uri
+            format: url
+            pattern: "^(http|https)://(localhost(:[0-9]+)?|[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})(:[0-9]+)?(/.*)?$"
             example: "https://short.url/abc123"
       responses:
         '200':
@@ -218,6 +219,11 @@ components:
           type: string
           description: Detailed error message
           example: "The provided URL is not valid"
+        details:
+          type: array
+          description: Additional error details
+          items:
+              type: string
         timestamp:
           type: string
           format: date-time
