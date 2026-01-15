@@ -1,5 +1,11 @@
+package com.example.origin.technical.exercise.shorturl.repository;
+
+import com.example.origin.technical.exercise.shorturl.model.UrlMapping;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryUrlMappingRepositoryTest {

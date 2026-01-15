@@ -1,4 +1,4 @@
-package api;
+package com.example.origin.technical.exercise.shorturl.api;
 
 import com.example.origin.technical.exercise.shorturl.model.CreateShortUrlRequest;
 import com.example.origin.technical.exercise.shorturl.model.CreateShortUrlResponse;

@@ -1,6 +1,8 @@
 package com.example.origin.technical.exercise.shorturl.repository;
 
 import com.example.origin.technical.exercise.shorturl.model.UrlMapping;
+import org.springframework.stereotype.Repository;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -8,6 +10,7 @@ import java.util.Optional;
 /**
  * In-memory implementation of the UrlMappingRepository interface.
  */
+@Repository
 public class InMemoryUrlMappingRepository implements UrlMappingRepository {
 
     private final Map<String, UrlMapping> urlMappingStore = new HashMap<>();
