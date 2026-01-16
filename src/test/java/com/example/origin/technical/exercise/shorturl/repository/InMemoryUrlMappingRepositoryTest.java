@@ -4,6 +4,7 @@ import com.example.origin.technical.exercise.shorturl.model.UrlMapping;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,4 +41,25 @@ class InMemoryUrlMappingRepositoryTest {
         assertTrue(repository.deleteByShortUrlPath("shortUrl"));
         assertFalse(repository.existsByShortUrlPath("shortUrl"));
     }
+
+	@Test
+	void testIncrementAccessCount() {
+		UrlMapping mapping = new UrlMapping("abc", "https://example.com");
+		LocalDateTime beforeIncrement = mapping.getLastAccessedAt();
+
+		try {
+			Thread.sleep(10);
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
+
+		mapping.incrementAccessCount();
+
+		assertEquals(1, mapping.getAccessCount());
+		assertTrue(mapping.getLastAccessedAt().isAfter(beforeIncrement) ||
+			mapping.getLastAccessedAt().isEqual(beforeIncrement));
+
+		mapping.incrementAccessCount();
+		assertEquals(2, mapping.getAccessCount());
+	}
 }

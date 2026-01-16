@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * Configuration properties for URL shortener service.
- * Can be customized via application.properties or application.yml
+ * Can be customized via application.properties
  */
 @Data
 @Configuration
@@ -16,10 +16,10 @@ public class UrlShortenerConfig {
     /**
      * The base URL for shortened URLs (e.g., "https://short.url")
      */
-    private String baseUrl = "http://localhost:8080/";
+    private String baseUrl;
 
     /**
      * Length of generated short URL
      */
-    private int shortUrlLength = 7;
+    private int shortUrlLength;
 }

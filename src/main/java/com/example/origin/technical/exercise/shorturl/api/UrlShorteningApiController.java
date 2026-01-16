@@ -24,7 +24,7 @@ public class UrlShorteningApiController implements UrlShorteningApi {
 
 	@Override
 	public ResponseEntity<CreateShortUrlResponse> _createShortUrl(CreateShortUrlRequest createShortUrlRequest) {
-		String fullUrl = createShortUrlRequest.getUrl().toString();
+		String fullUrl = createShortUrlRequest.getUrl();
 		Optional<UrlMapping> existingMapping = inMemoryUrlMappingRepository.findByFullUrl(fullUrl);
 		if (existingMapping.isPresent()) {
 			URI shortUrl = toShortUrl(existingMapping.get().getShortUrlPath());

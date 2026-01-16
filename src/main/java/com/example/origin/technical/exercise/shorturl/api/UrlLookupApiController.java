@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 import java.net.URI;
-import java.net.URL;
 
 @Controller
 @AllArgsConstructor
