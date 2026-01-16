@@ -14,6 +14,14 @@ import org.springframework.stereotype.Controller;
 import java.net.URI;
 import java.util.Optional;
 
+/**
+ * REST controller responsible for handling URL shortening operations.
+ * <p>
+ * This controller provides an endpoint for creating shortened URLs from full URLs.
+ * It checks for existing mappings to avoid duplicate short URLs for the same
+ * full URL and generates new short URLs using the {@link UrlShortenerService}.
+ * </p>
+ */
 @Controller
 @AllArgsConstructor
 public class UrlShorteningApiController implements UrlShorteningApi {
@@ -22,6 +30,20 @@ public class UrlShorteningApiController implements UrlShorteningApi {
 	private final UrlShortenerService urlShortenerService;
 	private final UrlShortenerConfig urlShortenerConfig;
 
+
+	/**
+	 * Creates a shortened URL for the provided full URL.
+	 * <p>
+	 * This method first checks if a mapping already exists for the given full URL.
+	 * If found, it returns the existing short URL to maintain idempotency.
+	 * Otherwise, it generates a new short URL path, saves the mapping, and returns
+	 * the complete short URL.
+	 * </p>
+	 *
+	 * @param createShortUrlRequest the request containing the full URL to shorten
+	 * @return a {@link ResponseEntity} containing the {@link CreateShortUrlResponse}
+	 *         with the shortened URL
+	 */
 	@Override
 	public ResponseEntity<CreateShortUrlResponse> _createShortUrl(CreateShortUrlRequest createShortUrlRequest) {
 		String fullUrl = createShortUrlRequest.getUrl();

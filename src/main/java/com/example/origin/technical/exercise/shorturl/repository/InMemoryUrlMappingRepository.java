@@ -8,7 +8,9 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * In-memory implementation of the UrlMappingRepository interface.
+ * In-memory implementation of the UrlMappingRepository interface based on the {@link HashMap}.
+ *
+ * NOTE: This is purely for demonstration and testing purposes only. The real implementation should use a persistent storage solution leveraging Spring Data and JPA.
  */
 @Repository
 public class InMemoryUrlMappingRepository implements UrlMappingRepository {

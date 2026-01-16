@@ -12,6 +12,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Global exception handler for the URL shortener application.
+ * <p>
+ * Handles validation errors, illegal arguments, and general exceptions,
+ * returning consistent {@link ErrorResponse} objects.
+ * </p>
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
