@@ -10,7 +10,7 @@ http:
     type: json
     data: |-
       {
-        "url": "blahhhh"
+        "url": "https://www.originenergy.com.au"
       }
   auth: inherit
 

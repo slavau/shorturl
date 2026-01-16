@@ -1,21 +1,15 @@
 info:
-  name: Create full URL
+  name: Get full URL Details
   type: http
   seq: 2
 
 http:
   method: GET
-  url: http://localhost:8080/url/full?shortUrl
+  url: http://localhost:8080/api/v1/url/full?shortUrl=http://localhost:8080/DGxEOIg
   params:
     - name: shortUrl
-      value: ""
+      value: http://localhost:8080/DGxEOIg
       type: query
-  body:
-    type: json
-    data: |-
-      {
-        "url": "https://www.example.com/very/long/url"
-      }
   auth: inherit
 
 settings:

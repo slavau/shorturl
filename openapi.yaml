@@ -10,7 +10,7 @@ paths:
   /{path}:
     get:
       summary: Redirect to full URL
-      description: Redirects to a hardcoded full URL (for demonstration purposes)
+      description: Redirects to a full URL
       operationId: redirectToFullUrl
       tags:
         - URL Redirect

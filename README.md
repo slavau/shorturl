@@ -3,17 +3,22 @@
 A Spring Boot application that provides URL shortening functionality using one-way SHA-256 hashing with Base62 encoding.
 
 ## 📋 Table of Contents
+- [Design considerations](#design-considerations)
 - [Prerequisites](#prerequisites)
 - [Running Locally](#running-locally)
 - [Running with Docker](#running-with-docker)
-- [API Documentation](#api-documentation)
-- [Project Structure](#project-structure)
-- [Technologies Used](#technologies-used)
-- [Configuration](#configuration)
+
+## Design considerations
+- The system should be highly available. This is required because if the service is down, all the URL redirections will fail.
+- The system will be read-heavy. We might be able to improve read performance by caching frequently accessed URLs.
+- The system should clean up all and expired URLs to free up storage space.
+- The real implementation should be based on a persistent storage (e.g., relational database, NoSQL database) instead of in-memory storage to ensure data durability and scalability.
+- Instead of generating short URLs during API call, we can pre-generate a batch of them offline and store them in the datastore to reduce latency during URL shortening requests.
+- In a production environment, we should consider rate limiting requests to prevent abuse of the URL shortening service.
 
 ## 🔧 Prerequisites
 
-Before running this application, ensure you have the following installed: 
+Before running this application, ensure you have the following installed:
 
 - **Java 21** or higher
 - **Maven 3.8+** (or use the included Maven wrapper)
@@ -22,28 +27,7 @@ Before running this application, ensure you have the following installed:
 
 ## 🚀 Running Locally
 
-### Option 1: Using Maven Wrapper (Recommended)
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/slavau/shorturl. git
-   cd shorturl
-   ```
-
-2. **Build the application:**
-   ```bash
-   ./mvnw clean package
-   ```
-
-3. **Run the application:**
-   ```bash
-   ./mvnw spring-boot:run
-   ```
-
-4. **Access the application:**
-   - Open your browser and navigate to:  `http://localhost:8080`
-
-### Option 2: Using Installed Maven
+### Option 1: Using Installed Maven
 
 1. **Clone the repository:**
    ```bash
@@ -58,10 +42,10 @@ Before running this application, ensure you have the following installed:
 
 3. **Run the JAR file:**
    ```bash
-   java -jar target/shorturl-0.0.1-SNAPSHOT. jar
+   java -jar target/shorturl-0.0.1-SNAPSHOT.jar
    ```
 
-### Option 3: Using Your IDE
+### Option 2: Using Your IDE
 
 1. **Import the project:**
    - Open your IDE (IntelliJ IDEA, Eclipse, VS Code)
@@ -124,23 +108,23 @@ Before running this application, ensure you have the following installed:
 
 ## 📚 API Documentation
 
+Bruno collection can be found in the project ROOT directory as [ShortUrlAPI](ShortUrlAPI)
+
 ### Create Short URL
 
-**Endpoint:** `POST /api/v1/shorten`
+**Endpoint:** `POST api/v1/url/short`
 
 **Request Body:**
 ```json
 {
-  "url": "https://www.example.com/very/long/url"
+  "url": "https://www.originenergy.com.au"
 }
 ```
 
 **Response:**
 ```json
 {
-  "shortUrl": "abc123X",
-  "originalUrl": "https://www.example.com/very/long/url",
-  "createdAt": "2026-01-15T10:30:00"
+  "shortUrl": "http://localhost:8080/abc123X"
 }
 ```
 
@@ -152,49 +136,22 @@ Before running this application, ensure you have the following installed:
 
 **Response:** Redirects to the original URL
 
-## 📁 Project Structure
+### Get Original URL details
 
+**Endpoint:** `GET /api/v1/url/full?shortUrl={shortUrl}`
+
+**Example:** `http://localhost:8080/api/v1/url/full?shortUrl=http://localhost:8080/abc123X`
+
+**Response:** Redirects to the original URL
+```json
+{
+  "fullUrl": "https://www.originenergy.com.au",
+  "accessCount": 0,
+  "createdAt": "2026-01-16T12:26:55.104669",
+  "expiresAt": "2027-01-11T12:26:55.105089",
+  "lastAccessedAt": "2026-01-16T12:26:55.105073"
+}
 ```
-shorturl/
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── com/example/origin/technical/exercise/shorturl/
-│   │   │       ├── ShorturlApplication.java
-│   │   │       ├── config/
-│   │   │       │   └── UrlShortenerConfig. java
-│   │   │       ├── model/
-│   │   │       │   └── UrlMapping. java
-│   │   │       ├── repository/
-│   │   │       │   ├── UrlMappingRepository.java
-│   │   │       │   └── InMemoryUrlMappingRepository.java
-│   │   │       └── service/
-│   │   │           └── UrlShortenerService.java
-│   │   └── resources/
-│   │       └── application.properties
-│   └── test/
-│       └── java/
-│           └── com/example/origin/technical/exercise/shorturl/
-│               └── repository/
-│                   └── InMemoryUrlMappingRepositoryTest.java
-├── Dockerfile
-├── docker-compose. yml
-├── . dockerignore
-├── pom.xml
-├── openapi.yaml
-└── README. md
-```
-
-## 🛠️ Technologies Used
-
-- **Java 21** - Programming language
-- **Spring Boot 4.0.1** - Application framework
-- **Maven** - Build tool
-- **Lombok** - Boilerplate code reduction
-- **OpenAPI 3.0** - API specification
-- **JUnit 5** - Testing framework
-- **Docker** - Containerization
-- **Google Distroless** - Minimal container base image
 
 ## ⚙️ Configuration
 
@@ -214,107 +171,3 @@ url.shortener.short-url-length=7
 logging.level.root=INFO
 logging.level.com.example.origin. technical.exercise.shorturl=DEBUG
 ```
-
-### Environment Variables
-
-You can override properties using environment variables:
-
-```bash
-# Using Maven
-URL_SHORTENER_BASE_URL=https://myshorturl.com ./mvnw spring-boot:run
-
-# Using Docker
-docker run -d -p 8080:8080 \
-  -e URL_SHORTENER_BASE_URL=https://myshorturl.com \
-  -e URL_SHORTENER_SHORT_URL_LENGTH=8 \
-  shorturl:latest
-```
-
-## 🔐 Security Features
-
-- **One-way SHA-256 hashing** - Cannot reverse engineer original URLs from short codes
-- **Base62 encoding** - URL-safe characters (0-9, A-Z, a-z)
-- **Non-sequential IDs** - Prevents enumeration attacks
-- **Distroless container** - Minimal attack surface (no shell, no package manager)
-- **Non-root user** - Container runs as non-privileged user
-
-## 🧪 Running Tests
-
-### Run all tests: 
-```bash
-./mvnw test
-```
-
-### Run specific test class:
-```bash
-./mvnw test -Dtest=InMemoryUrlMappingRepositoryTest
-```
-
-### Run tests with coverage:
-```bash
-./mvnw clean test jacoco:report
-```
-
-## 🐛 Troubleshooting
-
-### Port Already in Use
-
-If port 8080 is already in use: 
-
-```bash
-# Change port in application.properties
-server.port=9090
-
-# Or use environment variable
-SERVER_PORT=9090 ./mvnw spring-boot:run
-
-# Or with Docker
-docker run -d -p 9090:8080 shorturl:latest
-```
-
-### Maven Build Fails
-
-```bash
-# Clean and rebuild
-./mvnw clean install
-
-# Skip tests if needed
-./mvnw clean package -DskipTests
-```
-
-### Docker Build Issues
-
-```bash
-# Clean Docker cache
-docker system prune -a
-
-# Rebuild without cache
-docker build --no-cache -t shorturl:latest .
-```
-
-## 📊 Performance
-
-- **Image Size:** ~80MB (Distroless)
-- **Startup Time:** ~5-10 seconds
-- **Memory Usage:** ~256MB (typical)
-- **Hash Generation:** O(1) constant time
-
-## 📝 License
-
-This project is created for educational purposes.
-
-## 👥 Author
-
-- **GitHub:** [@slavau](https://github.com/slavau)
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
----
-
-**Happy URL Shortening! 🚀**
